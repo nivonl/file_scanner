@@ -18,3 +18,12 @@ The PII Report Generator script identifies personal information in a CSV file by
 To run this project, ensure you have Python installed and install the necessary packages using the following command:
 ```sh
 pip install pandas python-docx numpy
+
+## Usage
+Run the script from the Windows Command Prompt with the following command:
+```sh
+python pii_report.py <csv_file_path> <report_file_path>
+
+where :
+* <csv_file_path>: Path to the input CSV file.
+* <report_file_path>: Path where the DOCX report will be saved.
