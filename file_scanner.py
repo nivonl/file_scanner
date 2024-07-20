@@ -1,40 +1,19 @@
-import re
 import pandas as pd
 from docx import Document
 import sys
 from datetime import datetime
 import numpy as np
-
-# Define individual rule functions
-def contains_credit_card(column):
-    credit_card_pattern = re.compile(r'\b(?:\d[ -]*?){13,16}\b')
-    return column.apply(lambda x: bool(credit_card_pattern.match(str(x))))
-
-def contains_special_characters(column):
-    special_char_pattern = re.compile(r'[^\w\s-]')
-    return column.apply(lambda x: bool(special_char_pattern.search(str(x))))
-
-def contains_mbi(column):
-    mbi_pattern = re.compile(r'^[A-HJ-NP-Z0-9]{11}$')
-    return column.apply(lambda x: bool(mbi_pattern.match(str(x))))
-
-# Define Heuristics Dictionary
-heuristics_dict = {
-    "Credit Card Number": contains_credit_card,
-    "Special Characters": contains_special_characters,
-    "Medicare Beneficiary Identifier": contains_mbi
-}
+from heuristics import heuristics_dict
 
 def check_pii_columns_with_combinations(df, heuristics_dict):
     results = []
     for title, logic in heuristics_dict.items():
-        #add explenation
         most_fit_column = df.iloc[:, np.argmax(df.apply(lambda x: logic(x).mean(), axis=0))].name
         pct_true = np.max(df.apply(lambda x: logic(x).mean(), axis=0))
         results.append((title, most_fit_column, pct_true))
     return results
 
-def generate_report(results, report_file_path, scanned_file_name):
+def generate_report(results, report_file_path, scanned_file_name, df, heuristics_dict):
     doc = Document()
     doc.add_heading('Personal Information Report', 0)
 
@@ -71,7 +50,7 @@ def generate_report(results, report_file_path, scanned_file_name):
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("Usage: python pii_report.py <csv_file_path> <report_file_path>")
+        print("Usage: python scanner_reporter.py <csv_file_path> <report_file_path>")
         sys.exit(1)
     
     csv_file_path = sys.argv[1]
@@ -84,4 +63,4 @@ if __name__ == "__main__":
     results = check_pii_columns_with_combinations(df, heuristics_dict)
 
     # Generate report
-    generate_report(results, report_file_path, csv_file_path)
+    generate_report(results, report_file_path, csv_file_path, df, heuristics_dict)
