@@ -130,3 +130,7 @@ if __name__ == "__main__":
 
     # Generate report
     generate_report(results, report_file_path, csv_file_path, df, heuristics_dict)
+    
+    
+## Time that it took me : 
+# This took about 2 hours total

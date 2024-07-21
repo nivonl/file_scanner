@@ -24,3 +24,6 @@ heuristics_dict = {
     "Credit Card Number": contains_credit_card,
     "Medicare Beneficiary Identifier": contains_mbi
 }
+
+## Time that it took me : 
+# This part was as part of the total design but took about 50 minutes total, including exploring the huristics in the notebook
